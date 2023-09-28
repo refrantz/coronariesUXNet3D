@@ -9,19 +9,6 @@ from monai.inferers import sliding_window_inference
 # You may need to adjust the import statement based on your project structure.
 from network_backbone import UXNET  
 
-model = UXNET(
-    in_chans=1,
-    out_chans=2,
-    depths=[2, 2, 2, 2],
-    feat_size=[48, 96, 192, 384],
-    drop_path_rate=0,
-    layer_scale_init_value=1e-6,
-    spatial_dims=3,
-)
-
-model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
-model.eval()
-
 val_transforms = Compose(
     [
         AddChanneld(keys=["image"]),
@@ -52,13 +39,31 @@ def inference(image_array=None, image_path=None, segmentation_path=None, roi_siz
     input_tensor = transformed_data["image"]
     input_batch = input_tensor.unsqueeze(0)
 
+        
+    model = UXNET(
+        in_chans=1,
+        out_chans=2,
+        depths=[2, 2, 2, 2],
+        feat_size=[48, 96, 192, 384],
+        drop_path_rate=0,
+        layer_scale_init_value=1e-6,
+        spatial_dims=3,
+    )
+
     # Check if CUDA is available and move the model and input to GPU if possible
     if torch.cuda.is_available():
+        print("CUDA")
         model.to('cuda:0')
+        model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
         input_batch = input_batch.to('cuda:0')
     elif torch.mps.is_available():
+        print("MPS")
         model.to('mps')
+        model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
         input_batch = input_batch.to('mps')
+
+    model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
+    model.eval()
 
     # 3. Run the model
     with torch.no_grad():
