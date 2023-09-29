@@ -8,3 +8,4 @@ ptflops
 nibabel
 pillow
 timm
+monai
