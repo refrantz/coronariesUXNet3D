@@ -57,10 +57,8 @@ def inference(image_array=None, image_path=None, segmentation_path=None, roi_siz
         model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
         input_batch = input_batch.to('cuda:0')
     elif torch.backends.mps.is_available():
-        print("MPS")
-        model.to('mps')
-        model.load_state_dict(torch.load('./best_metric_model_2500.pth', map_location=torch.device("mps")))
-        input_batch = input_batch.to('mps')
+        print("MPS not Supported for 3D convolutions! Using CPU")
+        model.load_state_dict(torch.load('./best_metric_model_2500.pth', map_location=torch.device("cpu")))
     else:
         print("No GPU detected")   
         model.load_state_dict(torch.load('./best_metric_model_2500.pth', map_location=torch.device("cpu")))
