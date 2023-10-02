@@ -23,7 +23,7 @@ val_transforms = Compose(
 )
 
 # Function to run inference and display the results
-def inference(image_array=None, image_path=None, segmentation_path=None, roi_size=(96, 96, 96), sw_batch_size=2):
+def python_api(image_array=None, image_path=None, segmentation_path=None, roi_size=(96, 96, 96), sw_batch_size=2):
 
     if(image_path != None):
         original_nifti = nib.load(image_path)
@@ -80,4 +80,4 @@ def inference(image_array=None, image_path=None, segmentation_path=None, roi_siz
 
 image_path = '10018985_0000.nii.gz'
 
-inference(image_path=image_path)
+python_api(image_path=image_path)
