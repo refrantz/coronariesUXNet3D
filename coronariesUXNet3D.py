@@ -73,11 +73,11 @@ def python_api(image_array=None, image_path=None, segmentation_path=None, roi_si
     nifti_image = nib.Nifti1Image(output, original_nifti.affine, original_nifti.header)
 
     if segmentation_path != None:
-        nib.save(nifti_image, "./label_" + segmentation_path)
+        nib.save(nifti_image, segmentation_path + "label_" + image_path)
 
     return output
 
 
-image_path = '10018985_0000.nii.gz'
+image_path = '10753732_0000.nii.gz'
 
-python_api(image_path=image_path)
+python_api(image_path=image_path, segmentation_path="./")
