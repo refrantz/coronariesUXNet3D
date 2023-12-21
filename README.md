@@ -1,5 +1,6 @@
-# coronariesUXNet3D
-UXNet3D trained on ImageCAS dataset for coronary segmentation (88% dice score) and on select images from different datasets for brain vessel segmentation (85% dice score)
+# inferenceUXNet3D
+This code is only for running inference with pre-trained weights for the UXNet3D architecture, all training was done with the code for UXNet3D available at: https://github.com/MASILab/3DUX-Net.
 
-download weights from: https://drive.google.com/drive/folders/1ivvLJGXDopYmUYMWLrg5X4yf6c3Ecdt-?usp=share_link
-put weights into root folder (where name_of_architecture.py is) and insert the model path.
+UXNet3D trained on ImageCAS dataset for coronary segmentation (88% dice score) and on select images from different datasets for brain vessel segmentation (85% dice score) and hepatic vessels (85% dice score).
+
+Contact developer for access to pre-trained weights
