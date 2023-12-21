@@ -15,9 +15,10 @@ from argparse import ArgumentParser
 
 
 # parse arguments
-parser = ArgumentParser(description="coronariesUXNet3D", epilog='\n')
+parser = ArgumentParser(description="inference_UXNet3D", epilog='\n')
 
 # input/outputs
+parser.add_argument("--weights", help="Path to weight to be loaded")
 parser.add_argument("--i", help="Image(s) to segment. Can be a path to an image or to a folder.")
 parser.add_argument("--o", help="Segmentation output(s). Must be a folder if --i designates a folder.")
 parser.add_argument("--cpu", action="store_true", help="(optional) Enforce running with CPU rather than GPU.")
@@ -56,10 +57,18 @@ def inference():
     transformed_data = val_transforms(data)
     input_tensor = transformed_data["image"]
     input_batch = input_tensor.unsqueeze(0)
+    out_chans_input = 2
+    
+    if "brainvessels_model2_0.pth" in args['weights']:
+        out_chans_input = 2
+    elif "coronaries_model1_0.pth" in args['weights']:
+        out_chans_input = 2
+    elif "hepatic_vessels1_0.pth" in args['weights']:
+        out_chans_input = 3
         
     model = UXNET(
         in_chans=1,
-        out_chans=2,
+        out_chans=out_chans_input,
         depths=[2, 2, 2, 2],
         feat_size=[48, 96, 192, 384],
         drop_path_rate=0,
@@ -71,14 +80,14 @@ def inference():
     if torch.cuda.is_available() and not args['cpu']:
         print("CUDA")
         model.to('cuda:0')
-        model.load_state_dict(torch.load('./best_metric_model_2500.pth'))
+        model.load_state_dict(torch.load(args['weights']))
         input_batch = input_batch.to('cuda:0')
     elif torch.backends.mps.is_available() and not args['cpu']:
         print("MPS not Supported for 3D convolutions! Using CPU")
-        model.load_state_dict(torch.load('./best_metric_model_2500.pth', map_location=torch.device("cpu")))
+        model.load_state_dict(torch.load(args['weights'], map_location=torch.device("cpu")))
     else:
         print("No GPU detected")   
-        model.load_state_dict(torch.load('./best_metric_model_2500.pth', map_location=torch.device("cpu")))
+        model.load_state_dict(torch.load(args['weights'], map_location=torch.device("cpu")))
 
     model.eval()
 
